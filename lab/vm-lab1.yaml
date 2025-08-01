@@ -1,0 +1,41 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: lab-vm1
+  namespace: lab
+spec:
+  running: true
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: lab-vm1
+    spec:
+      domain:
+        cpu:
+          cores: 1
+        resources:
+          requests:
+            memory: 1Gi
+        devices:
+          disks:
+            - name: rootdisk
+              disk:
+                bus: virtio
+      volumes:
+        - name: rootdisk
+          persistentVolumeClaim:
+            claimName: lab-vm1-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lab-vm1-pvc
+  namespace: lab
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard
+

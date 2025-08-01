@@ -1,0 +1,5 @@
+resources:
+  - lab/vm-lab1.yaml
+  - non-prod/vm-app1.yaml
+  - prod/vm-db1.yaml
+
