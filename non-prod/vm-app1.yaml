@@ -1,0 +1,46 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: vm-app1
+  namespace: lab
+spec:
+  running: true
+  template:
+    spec:
+      domain:
+        devices:
+          disks:
+            - name: rootdisk
+              disk:
+                bus: virtio
+                bootOrder: 1
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+        resources:
+          requests:
+            memory: 2Gi
+      volumes:
+        - name: rootdisk
+          dataVolume:
+            name: vm-app1-rootdisk
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userData: |
+              #cloud-config
+              user: fedora
+              password: fedora
+              chpasswd: { expire: False }
+  dataVolumeTemplates:
+    - metadata:
+        name: vm-app1-rootdisk
+      spec:
+        sourceRef:
+          kind: DataSource
+          name: fedora
+          namespace: openshift-virtualization-os-images
+        storage:
+          resources:
+            requests:
+              storage: 10Gi
+
