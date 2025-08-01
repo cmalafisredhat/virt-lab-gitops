@@ -2,7 +2,7 @@ apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
   name: vm-app1
-  namespace: lab
+  namespace: non-prod
 spec:
   running: true
   template:
@@ -42,5 +42,5 @@ spec:
         storage:
           resources:
             requests:
-              storage: 10Gi
+              storage: 35Gi
 
