@@ -5,6 +5,20 @@ metadata:
   namespace: lab
 spec:
   running: true
+  dataVolumeTemplates:
+    - metadata:
+        name: lab-vm1-rootdisk
+      spec:
+        sourceRef:
+          kind: DataSource
+          name: fedora
+          namespace: openshift-virtualization-os-images
+        storage:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+          storageClassName: ocs-external-storagecluster-ceph-rbd
   template:
     metadata:
       labels:
@@ -15,27 +29,25 @@ spec:
           cores: 1
         resources:
           requests:
-            memory: 1Gi
+            memory: 2Gi
         devices:
           disks:
             - name: rootdisk
               disk:
                 bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
       volumes:
         - name: rootdisk
-          persistentVolumeClaim:
-            claimName: lab-vm1-pvc
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: lab-vm1-pvc
-  namespace: lab
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: ocs-external-storagecluster-ceph-rbd
-  resources:
-    requests:
-      storage: 10Gi
+          dataVolume:
+            name: lab-vm1-rootdisk
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userData: |
+              #cloud-config
+              user: cloud-user
+              password: redhat
+              chpasswd: { expire: False }
+              ssh_pwauth: True
 
