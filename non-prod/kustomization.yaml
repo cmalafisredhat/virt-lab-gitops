@@ -1,0 +1,3 @@
+resources:
+  - vm-app1.yaml
+  - namespace.yaml
