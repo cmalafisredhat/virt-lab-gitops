@@ -40,7 +40,10 @@ spec:
           name: fedora
           namespace: openshift-virtualization-os-images
         storage:
+          accessModes:
+            - ReadWriteMany
           resources:
             requests:
               storage: 32Gi
-
+          storageClassName: ocs-external-storagecluster-ceph-rbd
+          volumeMode: Block
